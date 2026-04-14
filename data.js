@@ -1,7 +1,7 @@
 const appData = {
   "Boiler": {
     "Mill seal air fan": [
-      { "Parameter": "BOTH PA FAN OFF", "Value": "(15 sec delay)" },
+      { "Parameter": "BOTH PA FAN OFF", "Value": "(1500 sec delay)" },
       { "Parameter": "FAN DE /NDE BRG TEMP HIGH", "Value": "> 90°C (3 sec)" },
       { "Parameter": "MOTOR DE/NDE BRG TEMP HIGH", "Value": "> 90°C (3 sec)" },
       { "Parameter": "MOTOR R/Y/B WDG TEMP HIGH (BYPASSED)", "Value": "> 124°C (3 sec)" }
