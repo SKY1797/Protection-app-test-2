@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Protection App</title>
+    
+    <!-- Remove line 10 - 16 if somting bad happens -->
+    
+    <!-- Favicon for browser tabs -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- iOS home screen icon -->
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header" id="main-header">
+        <div class="header-content">
+           <!-- <img src="NTPC logo.png" alt="NTPC Logo" class="logo left-logo"> -->
+            <div class="title-container">
+                <h1>NTPC Solapur Operation Department</h1>
+                <p class="subtitle">Equipment Protection Data</p>
+            </div>
+            <!-- <img src="Solapur logo.png" alt="Solapur Logo" class="logo right-logo"> -->
+        </div>
+    </header>
+    
+    <main id="app-container">
+        <!-- Dynamic content will be injected here -->
+    </main>
+
+    <!-- Load Data Before Logic -->
+    <script src="data.js"></script>
+
+    <!-- Application Logic Inline -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const appContainer = document.getElementById('app-container');
+            
+            // Wait slightly or just ensure appData is present
+            if (typeof appData === 'undefined') {
+                appContainer.innerHTML = `
+                    <div style="text-align: center; color: red; padding: 2rem; background: rgba(255,0,0,0.1); border-radius: 8px;">
+                        <h2>Error: Data not found</h2>
+                        <p>Ensure that data.js is properly loaded and contains the appData object. Double check for script loading errors in the browser console.</p>
+                    </div>
+                `;
+                console.error("appData is not defined. Data.js might not have loaded successfully.");
+                return;
+            }
+
+            console.log("Data loaded successfully. Areas:", Object.keys(appData));
+
+            const icons = {
+                'Boiler': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+                'Turbine': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10M12 2v20M2 12a10 10 0 0 1 10-10"/><path d="M12 12l4 4M12 12l-4-4M12 12l4-4M12 12l-4 4"/></svg>',
+                'Offsite': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M3 3v18h18"/><path d="M18 17V9a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/></svg>',
+                'FGD': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0A2 2 0 0 1 18 18H6a2 2 0 0 1-2-2m16 0v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1"/></svg>',
+                'Default': '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+            };
+
+            const navIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>';
+
+            // Render Tier 1: Home (Areas)
+            window.renderHome = function(pushHistory = true) {
+                if (pushHistory) {
+                    history.pushState({ view: 'home' }, '', '?view=home');
+                }
+                document.getElementById('main-header').style.display = 'block';
+                let areas = Object.keys(appData);
+                
+                let html = `
+                    <div class="view-container">
+                        <div class="view-header">
+                            <h2 class="view-title">Plant Areas</h2>
+                        </div>
+                        <div class="grid-container">
+                            ${areas.map(area => {
+                                let numEquipments = Object.keys(appData[area] || {}).length;
+                                return `
+                                <div class="card" onclick="window.renderArea('${area}')">
+                                    <h3 class="card-title">${area}</h3>
+                                    <span class="card-count">${numEquipments} Equipments</span>
+                                </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+                appContainer.innerHTML = html;
+                window.scrollTo(0,0);
+            };
+
+            // Render Tier 2: Equipments in an Area
+            window.renderArea = function(areaName, pushHistory = true) {
+                if(!appData[areaName]) return;
+                if (pushHistory) {
+                    history.pushState({ view: 'area', areaName: areaName }, '', '?view=area&name=' + encodeURIComponent(areaName));
+                }
+                document.getElementById('main-header').style.display = 'none';
+                
+                let equipments = Object.keys(appData[areaName]);
+
+                let html = `
+                    <div class="view-container">
+                        <div class="view-header">
+                            <h2 class="view-title">${areaName} Area</h2>
+                            <button class="btn-back" onclick="event.preventDefault(); window.history.length > 2 ? window.history.back() : window.renderHome()">
+                                ${navIcon} Back to Home
+                            </button>
+                        </div>
+                        <div class="grid-container">
+                            ${equipments.map(equip => {
+                                let numProtections = Array.isArray(appData[areaName][equip]) ? appData[areaName][equip].length : 0;
+                                return `
+                                <div class="card equip-card" onclick="window.renderEquipment('${areaName}', '${equip}')">
+                                    <h3 class="card-title">${equip}</h3>
+                                    <span class="card-count">${numProtections} Protections</span>
+                                </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+                appContainer.innerHTML = html;
+                window.scrollTo(0,0);
+            };
+
+            // Render Tier 3: Protections Table for Equipment
+            window.renderEquipment = function(areaName, equipName, pushHistory = true) {
+                if(!appData[areaName] || !appData[areaName][equipName]) return;
+                if (pushHistory) {
+                    history.pushState({ view: 'equipment', areaName: areaName, equipName: equipName }, '', '?view=equipment&area=' + encodeURIComponent(areaName) + '&equip=' + encodeURIComponent(equipName));
+                }
+                document.getElementById('main-header').style.display = 'none';
+
+                let protections = appData[areaName][equipName];
+
+                let tbodyHTML = "";
+                if (Array.isArray(protections) && protections.length > 0) {
+                    tbodyHTML = protections.map(prot => {
+                        let paramKey = Object.keys(prot).find(k => k.toLowerCase().includes('parameter') || k.toLowerCase().includes('name') || k === 'Pump Name');
+                        let valueKey = Object.keys(prot).find(k => k.toLowerCase().includes('value') || k.toLowerCase().includes('condition'));
+                        let actionKey = Object.keys(prot).find(k => k.toLowerCase().includes('action'));
+
+                        let param = paramKey && prot[paramKey] ? prot[paramKey] : '-';
+                        let val = valueKey && prot[valueKey] ? prot[valueKey] : '';
+                        if(actionKey && prot[actionKey]) {
+                            param = `${param} (${prot[actionKey]})`;
+                        }
+                        
+                        let valDisplay = '';
+                        if (Array.isArray(val)) {
+                            valDisplay = val.map((v, i) => {
+                                let mb = i < val.length - 1 ? 'margin-bottom: 0.5rem;' : '';
+                                return `<div style="${mb}">${v}</div>`;
+                            }).join('');
+                        } else {
+                            valDisplay = String(val).trim() ? val : '';
+                        }
+
+                        return `
+                            <tr>
+                                <td><strong>${param}</strong></td>
+                                <td>${valDisplay}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbodyHTML = '<tr><td colspan="2" style="text-align:center;">No protections listed.</td></tr>';
+                }
+
+                let html = `
+                    <div class="view-container">
+                        <div class="view-header">
+                            <div>
+                                <h2 class="view-title">${equipName}</h2>
+                                <p class="subtitle" style="color: var(--text-muted); margin-top: 4px;">Zone: ${areaName}</p>
+                            </div>
+                            <button class="btn-back" onclick="event.preventDefault(); window.history.length > 2 ? window.history.back() : window.renderArea('${areaName}')">
+                                ${navIcon} Back to ${areaName}
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60%;">Protection Parameter</th>
+                                        <th style="width: 40%;">Value / Condition</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tbodyHTML}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                appContainer.innerHTML = html;
+                window.scrollTo(0,0);
+            };
+
+            // Handle browser Back/Forward navigation
+            window.addEventListener('popstate', (event) => {
+                const state = event.state;
+                if (state) {
+                    if (state.view === 'home') window.renderHome(false);
+                    else if (state.view === 'area') window.renderArea(state.areaName, false);
+                    else if (state.view === 'equipment') window.renderEquipment(state.areaName, state.equipName, false);
+                } else {
+                    window.renderHome(false);
+                }
+            });
+
+            // Initial render based on URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const view = urlParams.get('view');
+
+            if (view === 'equipment') {
+                // Ensure state is set for current entry
+                history.replaceState({ view: 'equipment', areaName: urlParams.get('area'), equipName: urlParams.get('equip') }, '', window.location.search);
+                window.renderEquipment(urlParams.get('area'), urlParams.get('equip'), false);
+            } else if (view === 'area') {
+                history.replaceState({ view: 'area', areaName: urlParams.get('name') }, '', window.location.search);
+                window.renderArea(urlParams.get('name'), false);
+            } else {
+                history.replaceState({ view: 'home' }, '', '?view=home');
+                window.renderHome(false);
+            }
+        });
+    </script>
+</body>
+</html>
