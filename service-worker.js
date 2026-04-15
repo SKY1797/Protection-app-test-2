@@ -1,16 +1,14 @@
-const CACHE_NAME = 'Protection-app-v3'; // Bumped version to force the update
+const CACHE_NAME = 'Protection-app-v1';
 
 const urlsToCache = [
   '/',
   '/index.html',
-  '/style.css', 
+  '/style.css',
   '/data.js',
   '/icon-192.png',
   '/icon-512.png',
   '/favicon.ico',
   '/manifest.json'
-  // Note: If you don't actually have an 'apple-touch-icon.png' in your folder, 
-  // do not add it here, or it will break the installation again!
 ];
 
 self.addEventListener('install', event => {
@@ -35,23 +33,23 @@ self.addEventListener('activate', event => {
   self.clients.claim(); // Take control of all pages immediately
 });
 
-// 🟢 IMPROVED: Stale-While-Revalidate Strategy
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
+    // ignoreSearch: true ensures that ?view=home matches the cached /index.html
+    caches.match(event.request, { ignoreSearch: true }).then(cachedResponse => {
       
-      // Always try to fetch the latest version from the network in the background
       const fetchPromise = fetch(event.request).then(networkResponse => {
-        // Update the cache with the freshly fetched version
         caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, networkResponse.clone());
+          // Only cache GET requests (prevents errors with unsupported schemes)
+          if (event.request.method === 'GET' && event.request.url.startsWith('http')) {
+             cache.put(event.request, networkResponse.clone());
+          }
         });
         return networkResponse;
       }).catch(() => {
-        // If offline and network fails, do nothing (it will just rely on the cache)
+        // Network failed (offline), do nothing and let it fall back to cachedResponse
       });
 
-      // Return the cached response immediately if it exists, otherwise wait for the network
       return cachedResponse || fetchPromise;
     })
   );
