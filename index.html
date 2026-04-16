@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipment Protection App</title>
-    
+    <title>Equipment Protection Logic</title>
+
     <!-- Remove line 10 - 16 if somting bad happens -->
-    
+
     <!-- Favicon for browser tabs -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
     <!-- iOS home screen icon -->
     <link rel="apple-touch-icon" href="icon-192.png">
-    
+
     <link rel="manifest" href="manifest.json">
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header class="app-header" id="main-header">
         <div class="header-content">
-           <!-- <img src="NTPC logo.png" alt="NTPC Logo" class="logo left-logo"> -->
             <div class="title-container">
                 <h1>NTPC Solapur Operation Department</h1>
-                <p class="subtitle">Equipment Protection Data</p>
+                <p class="subtitle">Equipment Protection Logic</p>
             </div>
-            <!-- <img src="Solapur logo.png" alt="Solapur Logo" class="logo right-logo"> -->
         </div>
     </header>
-    
+
     <main id="app-container">
         <!-- Dynamic content will be injected here -->
     </main>
@@ -40,7 +40,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const appContainer = document.getElementById('app-container');
-            
+
             // Wait slightly or just ensure appData is present
             if (typeof appData === 'undefined') {
                 appContainer.innerHTML = `
@@ -55,84 +55,106 @@
 
             console.log("Data loaded successfully. Areas:", Object.keys(appData));
 
-            const icons = {
-                'Boiler': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
-                'Turbine': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10M12 2v20M2 12a10 10 0 0 1 10-10"/><path d="M12 12l4 4M12 12l-4-4M12 12l4-4M12 12l-4 4"/></svg>',
-                'Offsite': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M3 3v18h18"/><path d="M18 17V9a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/></svg>',
-                'FGD': '<svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0A2 2 0 0 1 18 18H6a2 2 0 0 1-2-2m16 0v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1"/></svg>',
-                'Default': '<svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+            // SVG icons matching Figma theme colors
+            const areaIcons = {
+                'Boiler': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>',
+                'Turbine': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/><path d="M12 12v.01"/></svg>',
+                'Offsite': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h.01"/><path d="M16 16h.01"/><path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M8 16h.01"/></svg>',
+                'FGD': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg>'
             };
 
-            const navIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>';
+            const navIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>';
 
-            // Render Tier 1: Home (Areas)
-            window.renderHome = function(pushHistory = true) {
+            // Build flat equipment list for search
+            let allEquipments = [];
+            Object.keys(appData).forEach(area => {
+                Object.keys(appData[area]).forEach(equip => {
+                    allEquipments.push({ area, equip });
+                });
+            });
+
+            // ======== Render Tier 1: Home (Areas) ========
+            window.renderHome = function (pushHistory = true) {
                 if (pushHistory) {
                     history.pushState({ view: 'home' }, '', '?view=home');
                 }
                 document.getElementById('main-header').style.display = 'block';
                 let areas = Object.keys(appData);
-                
+
                 let html = `
                     <div class="view-container">
-                        <div class="view-header">
-                            <h2 class="view-title">Plant Areas</h2>
+                        <div class="section-header">
+                            <h2 class="section-title">Plant Areas</h2>
+                            <div class="search-wrapper">
+                                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" id="global-search" placeholder="Search equipment..." autocomplete="off">
+                                <div id="search-results" class="search-results"></div>
+                            </div>
                         </div>
+                        <hr class="section-divider">
                         <div class="grid-container">
-                            ${areas.map(area => {
-                                let numEquipments = Object.keys(appData[area] || {}).length;
-                                return `
-                                <div class="card" onclick="window.renderArea('${area}')">
-                                    <h3 class="card-title">${area}</h3>
-                                    <span class="card-count">${numEquipments} Equipments</span>
+                            ${areas.map((area, i) => {
+                    let numEquipments = Object.keys(appData[area] || {}).length;
+                    let themeClass = 'card-theme-' + (i % 4);
+                    let iconSVG = areaIcons[area] || areaIcons['Boiler'];
+                    return `
+                                <div class="area-card" onclick="window.renderArea('${area}')">
+                                    <div class="card-top-row">
+                                        <div class="area-icon ${themeClass}">${iconSVG}</div>
+                                        <span class="area-name">${area}</span>
+                                    </div>
+                                    <hr class="card-divider">
+                                    <div class="card-bottom-row">
+                                        <span class="equip-label">Equipments</span>
+                                        <span class="equip-badge">${numEquipments}</span>
+                                    </div>
                                 </div>
                                 `;
-                            }).join('')}
+                }).join('')}
                         </div>
                     </div>
                 `;
                 appContainer.innerHTML = html;
-                window.scrollTo(0,0);
+                window.scrollTo(0, 0);
+                setupSearch();
             };
 
-            // Render Tier 2: Equipments in an Area
-            window.renderArea = function(areaName, pushHistory = true) {
-                if(!appData[areaName]) return;
+            // ======== Render Tier 2: Equipments in an Area ========
+            window.renderArea = function (areaName, pushHistory = true) {
+                if (!appData[areaName]) return;
                 if (pushHistory) {
                     history.pushState({ view: 'area', areaName: areaName }, '', '?view=area&name=' + encodeURIComponent(areaName));
                 }
                 document.getElementById('main-header').style.display = 'none';
-                
+
                 let equipments = Object.keys(appData[areaName]);
 
                 let html = `
                     <div class="view-container">
                         <div class="view-header">
                             <h2 class="view-title">${areaName} Area</h2>
-                            <button class="btn-back" onclick="event.preventDefault(); window.history.length > 2 ? window.history.back() : window.renderHome()">
+                            <button class="btn-back" onclick="event.preventDefault(); window.renderHome()">
                                 ${navIcon} Back to Home
                             </button>
                         </div>
-                        <div class="grid-container">
+                        <div class="equip-grid">
                             ${equipments.map(equip => {
-                                let numProtections = Array.isArray(appData[areaName][equip]) ? appData[areaName][equip].length : 0;
-                                return `
-                                <div class="card equip-card" onclick="window.renderEquipment('${areaName}', '${equip}')">
-                                    <h3 class="card-title">${equip}</h3>
-                                    <span class="card-count">${numProtections} Protections</span>
+                    return `
+                                <div class="equip-card" onclick="window.renderEquipment('${areaName}', '${equip}')">
+                                    <div class="card-title">${equip}</div>
                                 </div>
                                 `;
-                            }).join('')}
+                }).join('')}
                         </div>
                     </div>
                 `;
                 appContainer.innerHTML = html;
-                window.scrollTo(0,0);
+                window.scrollTo(0, 0);
             };
 
-            // Render Tier 3: Protections Table for Equipment
-            window.renderEquipment = function(areaName, equipName, pushHistory = true) {
-                if(!appData[areaName] || !appData[areaName][equipName]) return;
+            // ======== Render Tier 3: Protections Table for Equipment ========
+            window.renderEquipment = function (areaName, equipName, pushHistory = true) {
+                if (!appData[areaName] || !appData[areaName][equipName]) return;
                 if (pushHistory) {
                     history.pushState({ view: 'equipment', areaName: areaName, equipName: equipName }, '', '?view=equipment&area=' + encodeURIComponent(areaName) + '&equip=' + encodeURIComponent(equipName));
                 }
@@ -149,10 +171,10 @@
 
                         let param = paramKey && prot[paramKey] ? prot[paramKey] : '-';
                         let val = valueKey && prot[valueKey] ? prot[valueKey] : '';
-                        if(actionKey && prot[actionKey]) {
+                        if (actionKey && prot[actionKey]) {
                             param = `${param} (${prot[actionKey]})`;
                         }
-                        
+
                         let valDisplay = '';
                         if (Array.isArray(val)) {
                             valDisplay = val.map((v, i) => {
@@ -179,9 +201,9 @@
                         <div class="view-header">
                             <div>
                                 <h2 class="view-title">${equipName}</h2>
-                                <p class="subtitle" style="color: var(--text-muted); margin-top: 4px;">Zone: ${areaName}</p>
+                                <p style="color: var(--text-muted); margin-top: 4px; font-size: 0.85rem;">Zone: ${areaName}</p>
                             </div>
-                            <button class="btn-back" onclick="event.preventDefault(); window.history.length > 2 ? window.history.back() : window.renderArea('${areaName}')">
+                            <button class="btn-back" onclick="event.preventDefault(); window.renderArea('${areaName}')">
                                 ${navIcon} Back to ${areaName}
                             </button>
                         </div>
@@ -201,8 +223,59 @@
                     </div>
                 `;
                 appContainer.innerHTML = html;
-                window.scrollTo(0,0);
+                window.scrollTo(0, 0);
             };
+
+            // ======== Search Setup ========
+            function setupSearch() {
+                const searchInput = document.getElementById('global-search');
+                const searchResults = document.getElementById('search-results');
+                if (!searchInput || !searchResults) return;
+
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase().trim();
+                    searchResults.innerHTML = '';
+
+                    if (query.length < 2) {
+                        searchResults.style.display = 'none';
+                        return;
+                    }
+
+                    const matches = allEquipments.filter(item =>
+                        item.equip.toLowerCase().includes(query) || item.area.toLowerCase().includes(query)
+                    );
+
+                    if (matches.length > 0) {
+                        matches.slice(0, 8).forEach(match => {
+                            const div = document.createElement('div');
+                            div.className = 'search-result-item';
+                            div.innerHTML = `
+                                <div class="sr-equip">${match.equip}</div>
+                                <div class="sr-area">${match.area} Area</div>
+                            `;
+                            div.onclick = () => {
+                                searchInput.value = '';
+                                searchResults.style.display = 'none';
+                                window.renderEquipment(match.area, match.equip);
+                            };
+                            searchResults.appendChild(div);
+                        });
+                        searchResults.style.display = 'block';
+                    } else {
+                        const div = document.createElement('div');
+                        div.className = 'search-result-empty';
+                        div.textContent = 'No matching equipment found.';
+                        searchResults.appendChild(div);
+                        searchResults.style.display = 'block';
+                    }
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                        searchResults.style.display = 'none';
+                    }
+                });
+            }
 
             // Handle browser Back/Forward navigation
             window.addEventListener('popstate', (event) => {
@@ -221,7 +294,6 @@
             const view = urlParams.get('view');
 
             if (view === 'equipment') {
-                // Ensure state is set for current entry
                 history.replaceState({ view: 'equipment', areaName: urlParams.get('area'), equipName: urlParams.get('equip') }, '', window.location.search);
                 window.renderEquipment(urlParams.get('area'), urlParams.get('equip'), false);
             } else if (view === 'area') {
@@ -233,14 +305,15 @@
             }
         });
     </script>
-    
+
     <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js')
-        .then(reg => console.log('SW registered', reg))
-        .catch(err => console.error('SW failed', err));
-      }
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(reg => console.log('SW registered', reg))
+                .catch(err => console.error('SW failed', err));
+        }
     </script>
-    
+
 </body>
+
 </html>
