@@ -29,6 +29,8 @@
         </div>
     </header>
 
+    <hr class="section-divider" style="max-width: 1200px; margin: 0 auto;">
+
     <main id="app-container">
         <!-- Dynamic content will be injected here -->
     </main>
@@ -55,13 +57,26 @@
 
             console.log("Data loaded successfully. Areas:", Object.keys(appData));
 
-            // SVG icons matching Figma theme colors
+            // SVG icons 
             const areaIcons = {
                 'Boiler': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>',
                 'Turbine': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/><path d="M12 12v.01"/></svg>',
                 'Offsite': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h.01"/><path d="M16 16h.01"/><path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M8 16h.01"/></svg>',
                 'FGD': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg>'
             };
+
+            // Area theme mapping (index-based, same order as Object.keys(appData))
+            const areaThemes = {};
+            Object.keys(appData).forEach((area, i) => {
+                const themeIndex = i % 4;
+                const colors = [
+                    { cls: 'card-theme-0', accent: 'rgba(232, 99, 43, 0.08)', border: 'rgba(232, 99, 43, 0.15)' },
+                    { cls: 'card-theme-1', accent: 'rgba(75, 107, 245, 0.08)', border: 'rgba(75, 107, 245, 0.15)' },
+                    { cls: 'card-theme-2', accent: 'rgba(155, 89, 208, 0.08)', border: 'rgba(155, 89, 208, 0.15)' },
+                    { cls: 'card-theme-3', accent: 'rgba(45, 191, 160, 0.08)', border: 'rgba(45, 191, 160, 0.15)' }
+                ];
+                areaThemes[area] = colors[themeIndex];
+            });
 
             const navIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -84,10 +99,10 @@
                 let html = `
                     <div class="view-container">
                         <div class="section-header">
-                            <h2 class="section-title">Plant Areas</h2>
+                            <h2 class="section-title">Select Plant Area</h2>
                             <div class="search-wrapper">
                                 <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                <input type="text" id="global-search" placeholder="Search equipment..." autocomplete="off">
+                                <input type="text" id="global-search" placeholder="Or search equipment by Name..." autocomplete="off">
                                 <div id="search-results" class="search-results"></div>
                             </div>
                         </div>
@@ -128,11 +143,16 @@
                 document.getElementById('main-header').style.display = 'none';
 
                 let equipments = Object.keys(appData[areaName]);
+                let iconSVG = areaIcons[areaName] || areaIcons['Boiler'];
+                let theme = areaThemes[areaName] || areaThemes[Object.keys(areaThemes)[0]];
 
                 let html = `
-                    <div class="view-container">
+                    <div class="view-container area-view-tinted" style="--area-accent: ${theme.accent}; --area-border: ${theme.border};">
                         <div class="view-header">
-                            <h2 class="view-title">${areaName} Area</h2>
+                            <div class="view-title-row">
+                                <div class="area-icon ${theme.cls}">${iconSVG}</div>
+                                <h2 class="view-title">${areaName} Area</h2>
+                            </div>
                             <button class="btn-back" onclick="event.preventDefault(); window.renderHome()">
                                 ${navIcon} Back to Home
                             </button>
@@ -161,6 +181,7 @@
                 document.getElementById('main-header').style.display = 'none';
 
                 let protections = appData[areaName][equipName];
+                let theme = areaThemes[areaName] || areaThemes[Object.keys(areaThemes)[0]];
 
                 let tbodyHTML = "";
                 if (Array.isArray(protections) && protections.length > 0) {
@@ -197,7 +218,7 @@
                 }
 
                 let html = `
-                    <div class="view-container">
+                    <div class="view-container area-view-tinted" style="--area-accent: ${theme.accent}; --area-border: ${theme.border};">
                         <div class="view-header">
                             <div>
                                 <h2 class="view-title">${equipName}</h2>
