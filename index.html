@@ -65,19 +65,6 @@
                 'FGD': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg>'
             };
 
-            // Area theme mapping (index-based, same order as Object.keys(appData))
-            const areaThemes = {};
-            Object.keys(appData).forEach((area, i) => {
-                const themeIndex = i % 4;
-                const colors = [
-                    { cls: 'card-theme-0', accent: 'rgba(232, 99, 43, 0.08)', border: 'rgba(232, 99, 43, 0.15)' },
-                    { cls: 'card-theme-1', accent: 'rgba(75, 107, 245, 0.08)', border: 'rgba(75, 107, 245, 0.15)' },
-                    { cls: 'card-theme-2', accent: 'rgba(155, 89, 208, 0.08)', border: 'rgba(155, 89, 208, 0.15)' },
-                    { cls: 'card-theme-3', accent: 'rgba(45, 191, 160, 0.08)', border: 'rgba(45, 191, 160, 0.15)' }
-                ];
-                areaThemes[area] = colors[themeIndex];
-            });
-
             const navIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>';
 
             // Build flat equipment list for search
@@ -143,16 +130,11 @@
                 document.getElementById('main-header').style.display = 'none';
 
                 let equipments = Object.keys(appData[areaName]);
-                let iconSVG = areaIcons[areaName] || areaIcons['Boiler'];
-                let theme = areaThemes[areaName] || areaThemes[Object.keys(areaThemes)[0]];
 
                 let html = `
-                    <div class="view-container area-view-tinted" style="--area-accent: ${theme.accent}; --area-border: ${theme.border};">
+                    <div class="view-container">
                         <div class="view-header">
-                            <div class="view-title-row">
-                                <div class="area-icon ${theme.cls}">${iconSVG}</div>
-                                <h2 class="view-title">${areaName} Area</h2>
-                            </div>
+                            <h2 class="view-title">${areaName} Area</h2>
                             <button class="btn-back" onclick="event.preventDefault(); window.renderHome()">
                                 ${navIcon} Back to Home
                             </button>
@@ -181,7 +163,6 @@
                 document.getElementById('main-header').style.display = 'none';
 
                 let protections = appData[areaName][equipName];
-                let theme = areaThemes[areaName] || areaThemes[Object.keys(areaThemes)[0]];
 
                 let tbodyHTML = "";
                 if (Array.isArray(protections) && protections.length > 0) {
@@ -218,7 +199,7 @@
                 }
 
                 let html = `
-                    <div class="view-container area-view-tinted" style="--area-accent: ${theme.accent}; --area-border: ${theme.border};">
+                    <div class="view-container">
                         <div class="view-header">
                             <div>
                                 <h2 class="view-title">${equipName}</h2>
