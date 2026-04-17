@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --bg-surface: #F3F5F9;
+    --bg-surface: #F9F7F7;
     --white: #FFFFFF;
     --text-dark: #1A1D26;
     --text-muted: #6B7280;
@@ -236,61 +236,69 @@ body {
     overflow: hidden;
 }
 
+/*
 /* Theme-specific card tints and colored shadow glow */
-.area-card:nth-child(1) {
-    /* background: linear-gradient(135deg, #FFFAF6 0%, #FFFFFF 100%); */
+/* Theme-specific card tints and colored shadow glow - Cyclic every 4 elements */
+.area-card:nth-child(4n + 1),
+.equip-card:nth-child(4n + 1) {
     box-shadow:
         0 4px 16px rgba(232, 99, 43, 0.12),
         0 1px 4px rgba(232, 99, 43, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.area-card:nth-child(1):hover {
+.area-card:nth-child(4n + 1):hover,
+.equip-card:nth-child(4n + 1):hover {
     box-shadow:
         0 8px 28px rgba(232, 99, 43, 0.22),
         0 2px 8px rgba(232, 99, 43, 0.12),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.area-card:nth-child(2) {
-    /* background: linear-gradient(135deg, #F7F9FF 0%, #FFFFFF 100%); */
+.area-card:nth-child(4n + 2),
+.equip-card:nth-child(4n + 2),
+.btn-back {
     box-shadow:
         0 4px 16px rgba(75, 107, 245, 0.12),
         0 1px 4px rgba(75, 107, 245, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.area-card:nth-child(2):hover {
+.area-card:nth-child(4n + 2):hover,
+.equip-card:nth-child(4n + 2):hover,
+.btn-back:hover {
     box-shadow:
         0 8px 28px rgba(75, 107, 245, 0.22),
         0 2px 8px rgba(75, 107, 245, 0.12),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.area-card:nth-child(3) {
-    /* background: linear-gradient(135deg, #FBF7FF 0%, #FFFFFF 100%); */
+.area-card:nth-child(4n + 3),
+.equip-card:nth-child(4n + 3) {
     box-shadow:
         0 4px 16px rgba(155, 89, 208, 0.12),
         0 1px 4px rgba(155, 89, 208, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.area-card:nth-child(3):hover {
+.area-card:nth-child(4n + 3):hover,
+.equip-card:nth-child(4n + 3):hover {
     box-shadow:
         0 8px 28px rgba(155, 89, 208, 0.22),
         0 2px 8px rgba(155, 89, 208, 0.12),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.area-card:nth-child(4) {
-    /* background: linear-gradient(135deg, #F2FDF9 0%, #FFFFFF 100%); */
+.area-card:nth-child(4n + 4),
+.equip-card:nth-child(4n + 4) {
     box-shadow:
         0 4px 16px rgba(45, 191, 160, 0.12),
         0 1px 4px rgba(45, 191, 160, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.area-card:nth-child(4):hover {
+.area-card:nth-child(4n + 4):hover,
+.equip-card:nth-child(4n + 4):hover {
     box-shadow:
         0 8px 28px rgba(45, 191, 160, 0.22),
         0 2px 8px rgba(45, 191, 160, 0.12),
